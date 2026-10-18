@@ -21,12 +21,12 @@
 :root{
   color-scheme:light dark;
   --bg:#F3F6FC; --surface:#FFFFFF; --ink:#17212E; --ink-soft:#56657F; --line:#CDD8EC;
-  --plus:#2E8B57; --times:#7B61FF; --adventure:#E4572E;
+  --plus:#2E8B57; --times:#7B61FF; --adventure:#E4572E; --world:#2D6CDF;
   --font:'Baloo Bhaijaan 2','Tajawal','Segoe UI',Tahoma,Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root{--bg:#121A26; --surface:#1C2736; --ink:#EAF1FB; --ink-soft:#9FB0C8; --line:#2C3A4E;
-    --plus:#49C684; --times:#A392FF; --adventure:#FF8A5C;}
+    --plus:#49C684; --times:#A392FF; --adventure:#FF8A5C; --world:#5B93F5;}
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
@@ -53,7 +53,7 @@ a.card:focus-visible{outline:4px solid var(--times); outline-offset:3px}
   display:grid; place-items:center; color:#fff;
   font-size:46px; font-weight:800; line-height:1;
 }
-.t1 .sign{background:var(--plus)} .t2 .sign{background:var(--times)} .t3 .sign{background:var(--adventure)}
+.t0 .sign{background:var(--world); font-size:40px} .t1 .sign{background:var(--plus)} .t2 .sign{background:var(--times)} .t3 .sign{background:var(--adventure)}
 .txt{display:flex; flex-direction:column; gap:4px; min-width:0}
 .title{font-size:clamp(20px,3.6vw,28px); font-weight:800}
 .desc{font-size:clamp(14px,2.4vw,18px); color:var(--ink-soft); font-weight:600}
@@ -67,6 +67,14 @@ footer{color:var(--ink-soft); font-size:14px; font-weight:600; text-align:center
 </header>
 
 <main>
+  <a class="card t0" href="math-world.html">
+    <span class="sign" aria-hidden="true">🌟</span>
+    <span class="txt">
+      <span class="title">عالم الحساب</span>
+      <span class="desc">الصغير: جمع وناقص · الكبير: ضرب وقسمة حتى 100</span>
+    </span>
+  </a>
+
   <a class="card t1" href="addition-tables.html">
     <span class="sign" aria-hidden="true">+−</span>
     <span class="txt">
