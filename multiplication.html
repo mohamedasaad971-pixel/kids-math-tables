@@ -1,0 +1,396 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>جداول الضرب</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap">
+<style>
+/* Layout: one full-screen app; header + centered stage; big touch targets for tablets */
+:root{
+  --bg:#EAF6FF; --ink:#17304D; --soft:#5B7391; --card:#FFFFFF; --line:#CFE3F5;
+  --sun:#FFC93C; --coral:#FF6B6B; --mint:#22B8A6; --violet:#7B61FF; --good:#1FAF5B; --bad:#E5484D;
+  --font:'Baloo Bhaijaan 2','Segoe UI','Tahoma','Arial',sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:clamp(16px,2.6vmin,26px);
+  padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow:hidden;user-select:none;-webkit-user-select:none}
+#root{height:100%;display:flex;flex-direction:column;gap:1.2vmin;padding-block:1.4vmin}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0}
+button:focus-visible{outline:4px solid var(--violet);outline-offset:3px}
+.eq{direction:ltr;unicode-bidi:isolate;display:inline-block;font-variant-numeric:tabular-nums}
+header{display:flex;align-items:center;gap:1.5vmin;flex:none}
+header h1{margin:0;font-size:1.5em;font-weight:800;flex:1;text-wrap:balance}
+.pill{background:var(--card);border-radius:99px;padding:.3em .9em;font-weight:800;display:flex;gap:.4em;align-items:center;box-shadow:0 .2em 0 var(--line)}
+.ib{width:2.4em;height:2.4em;border-radius:50%;background:var(--card);font-size:1.1em;font-weight:800;box-shadow:0 .2em 0 var(--line);display:grid;place-items:center}
+.ib:active,.btn:active,.card:active,.opt:active,.tb:active{transform:translateY(.15em)}
+main{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vmin;overflow:auto;padding:.5vmin}
+.btn{background:var(--violet);color:#fff;font-weight:800;font-size:1.25em;padding:.55em 1.4em;border-radius:1em;box-shadow:0 .25em 0 #5A43CC;transition:transform .08s}
+.btn.sun{background:var(--sun);color:#3D2B00;box-shadow:0 .25em 0 #D9A413}
+.btn.mint{background:var(--mint);box-shadow:0 .25em 0 #158A7C}
+.btn.ghost{background:var(--card);color:var(--ink);box-shadow:0 .25em 0 var(--line)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.row{display:flex;gap:2vmin;flex-wrap:wrap;justify-content:center;align-items:center}
+.big{font-size:clamp(2em,9vmin,5em);font-weight:800;line-height:1.1}
+.say{font-size:clamp(1.2em,4vmin,2.2em);font-weight:700;text-align:center;max-width:36em;text-wrap:balance;margin:0}
+.note{color:var(--soft);font-weight:500;text-align:center;margin:0}
+/* home */
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2.2vmin;width:min(100%,60em)}
+.card{border-radius:1.2em;padding:1em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2em;color:#fff;font-weight:800;font-size:1.3em;text-align:center;box-shadow:0 .3em 0 rgba(0,0,0,.18);min-height:5.2em;transition:transform .08s}
+.card .ic{font-size:2.2em;line-height:1}
+.card small{font-size:.65em;font-weight:500;opacity:.92}
+.medals{display:flex;gap:.6vmin;flex-wrap:wrap;justify-content:center}
+.medal{width:2.2em;height:2.2em;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9em;color:#fff;position:relative}
+.medal.on::after{content:"★";position:absolute;top:-.55em;inset-inline-end:-.3em;font-size:.9em;color:var(--sun);text-shadow:0 0 2px #7a5a00}
+.medal.off{background:var(--line)!important;color:var(--soft)}
+/* visuals */
+.groups{display:flex;flex-wrap:wrap;gap:1.4vmin;justify-content:center;align-items:flex-start;max-width:100%}
+.grp{background:color-mix(in srgb,var(--c) 18%,white);border:.28vmin dashed var(--c);border-radius:2vmin;padding:1vmin;display:grid;gap:.2vmin;line-height:1;direction:ltr}
+.grp span,.arr span{font-size:var(--e);display:block;text-align:center;animation:pop .35s both;animation-delay:var(--d,0ms)}
+.arr{display:grid;gap:.4vmin;direction:ltr;background:var(--card);padding:1.2vmin;border-radius:2vmin;box-shadow:0 .25em 0 var(--line)}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.plus{font-size:2em;font-weight:800;align-self:center;color:var(--soft)}
+.sums{display:flex;gap:.5em;flex-wrap:wrap;justify-content:center;align-items:center;font-weight:800;font-size:clamp(1.6em,6vmin,3.4em)}
+.chip{background:var(--card);border-radius:.6em;padding:.1em .5em;box-shadow:0 .08em 0 var(--line)}
+.dots{display:flex;gap:1vmin;justify-content:center}
+.dot{width:1.6vmin;height:1.6vmin;border-radius:50%;background:var(--line)}
+.dot.on{background:var(--violet)}
+.nav{display:flex;gap:2vmin;justify-content:center;flex:none}
+/* tables picker */
+.tgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2vmin;width:min(100%,56em)}
+.tb{aspect-ratio:1.15;border-radius:1em;color:#fff;font-weight:800;font-size:clamp(2em,9vmin,4.4em);box-shadow:0 .08em 0 rgba(0,0,0,.2);position:relative;transition:transform .08s;background:var(--c)}
+.tb.sel{outline:.5vmin solid var(--ink);outline-offset:.4vmin}
+.tb.star::after{content:"★";position:absolute;top:.05em;inset-inline-end:.15em;font-size:.4em;color:var(--sun);text-shadow:0 0 3px #7a5a00}
+/* table view */
+.tview{display:grid;grid-template-columns:minmax(0,13em) minmax(0,1fr);gap:2vmin;width:100%;height:100%;min-height:0}
+.rows{display:flex;flex-direction:column;gap:.8vmin;min-height:0;overflow:auto}
+.rw{flex:1;background:var(--card);border-radius:.8em;font-weight:800;font-size:1.15em;padding:.1em .6em;box-shadow:0 .12em 0 var(--line);display:flex;justify-content:center;align-items:center;min-height:1.7em}
+.rw.on{background:var(--c);color:#fff}
+.stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.6vmin;min-height:0;overflow:auto}
+.skip{display:flex;gap:.6vmin;flex-wrap:wrap;justify-content:center;direction:ltr}
+.sk{min-width:2.1em;text-align:center;padding:.1em .3em;border-radius:.6em;background:var(--card);font-weight:800;color:var(--soft)}
+.sk.on{background:var(--c);color:#fff}
+.tip{background:#FFF3C4;border-radius:1em;padding:.5em 1em;font-weight:700;text-align:center;max-width:32em}
+/* practice */
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2vmin;width:min(100%,34em)}
+.opt{background:var(--card);border-radius:1em;font-weight:800;font-size:clamp(2em,9vmin,4.4em);padding:.25em;box-shadow:0 .1em 0 var(--line),0 .25em 0 var(--line);transition:transform .08s;direction:ltr}
+.opt.good{background:var(--good);color:#fff}
+.opt.bad{background:var(--bad);color:#fff;opacity:.5;pointer-events:none}
+.q{display:flex;gap:.3em;align-items:center;direction:ltr;font-weight:800;font-size:clamp(3em,14vmin,7em);line-height:1}
+.q .m{color:var(--violet)}
+.bar{height:1.6vmin;background:var(--line);border-radius:99px;width:min(100%,34em);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--mint);transition:width .3s}
+.fb{min-height:1.6em;font-weight:800;font-size:1.3em;text-align:center}
+.fb.ok{color:var(--good)}.fb.no{color:var(--bad)}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-2vmin)}75%{transform:translateX(2vmin)}}
+.stars{font-size:clamp(3em,14vmin,7em);letter-spacing:.1em}
+.stars .o{filter:grayscale(1);opacity:.25}
+.hint{display:flex;flex-direction:column;align-items:center;gap:.5vmin}
+.hint .arr{transform-origin:top}
+@media (max-width:760px){
+  .tview{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}
+  .rows{flex-direction:row;flex-wrap:wrap;justify-content:center}
+  .rw{flex:0 0 auto;font-size:.8em;padding:.1em .45em}
+  .menu{grid-template-columns:1fr}
+  .card{min-height:3.6em;flex-direction:row;gap:.6em}
+  .card small{display:none}
+  .tgrid{grid-template-columns:repeat(5,minmax(0,1fr));gap:1.4vmin}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div id="root"></div>
+
+<script>
+document.documentElement.lang='ar';document.documentElement.dir='rtl';
+const EM=['⭐','🍎','🐞','🎈','🍓','🐠','🌸','🚗','🐥','🍪'];
+const emo=n=>EM[(n-1)%10];
+const col=n=>`hsl(${(n*37+205)%360} 68% 50%)`;
+const TIPS={
+ 1:'أي عدد × 1 يبقى كما هو. المجموعة الواحدة لا تتغيّر.',
+ 2:'× 2 يعني الضعف: اجمع العدد مع نفسه.',
+ 3:'عُدّ بالثلاثات: كل قفزة 3.',
+ 4:'× 4 هو ضعف الضعف: ضاعف العدد مرتين.',
+ 5:'ناتج × 5 ينتهي دائمًا بـ 0 أو 5.',
+ 6:'× 6 = × 5 ثم أضف العدد مرة واحدة.',
+ 7:'تذكّر هذين: 7 × 7 = 49 و 7 × 8 = 56.',
+ 8:'× 8 هو ضعف ضعف الضعف: ضاعف 3 مرات.',
+ 9:'مجموع رقمَي الناتج دائمًا 9. مثال: 9 × 3 = 27 و 2 + 7 = 9.',
+ 10:'× 10: ضع صفرًا على يمين العدد.'
+};
+const $=s=>document.querySelector(s);
+let sound=true;
+let ac;
+function tone(f,d=.16,t=0){ if(!sound)return; try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=f;g.gain.value=.15;o.connect(g);g.connect(ac.destination);const s=ac.currentTime+t;o.start(s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.stop(s+d+.02)}catch(e){} }
+const sfx={ok(){tone(660,.12);tone(880,.2,.12)},no(){tone(220,.25)},win(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,i*.13))}};
+function say(t){ if(!sound)return; try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;speechSynthesis.speak(u)}catch(e){} }
+const sayEq=(a,b)=>say(`${a} times ${b} equals ${a*b}`);
+
+/* progress */
+let prog={};
+try{prog=JSON.parse(localStorage.getItem('mt_prog')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('mt_prog',JSON.stringify(prog))}catch(e){}}
+function rec(t,ok){const p=prog[t]=prog[t]||{ok:0,n:0};p.n++;if(ok)p.ok++;save()}
+const mastered=t=>{const p=prog[t];return p&&p.ok>=8&&p.ok/p.n>=.8};
+const totalStars=()=>Object.values(prog).reduce((s,p)=>s+p.ok,0);
+
+/* visuals */
+let dly=0;
+function groupsVis(g,p,e){
+  const total=g*p; const size= total<=12?9: total<=24?7: total<=48?5.2: total<=80?4: 3.3;
+  let h=`<div class="groups" style="--e:${size}vmin">`;
+  for(let i=0;i<g;i++){
+    h+=`<div class="grp" style="--c:${col(i+3)};grid-template-columns:repeat(${Math.min(p,5)},auto)">`;
+    for(let j=0;j<p;j++){h+=`<span style="--d:${(dly++%40)*25}ms">${e}</span>`}
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+function arrVis(r,c,e,size){
+  size=size||(r*c<=25?6:r*c<=60?4.4:3.2);
+  let h=`<div class="arr" style="--e:${size}vmin;grid-template-columns:repeat(${c},auto)">`;
+  for(let i=0;i<r*c;i++)h+=`<span style="--d:${(i%40)*20}ms">${e}</span>`;
+  return h+'</div>';
+}
+const eq=(a,b,r)=>`<span class="eq">${a} × ${b} = ${r===undefined?a*b:r}</span>`;
+
+/* state */
+const S={screen:'home',slide:0,g:3,p:4,n:2,row:1,sel:new Set([2]),mode:'practice',ses:null};
+let timer=null;
+function go(screen,extra){clearInterval(timer);Object.assign(S,extra||{},{screen});dly=0;render()}
+
+function header(title,back){
+  return `<header>
+   ${back?`<button class="ib" data-a="home" aria-label="الرئيسية">⌂</button>`:''}
+   <h1>${title}</h1>
+   <div class="pill" title="النجوم">⭐ <span class="eq">${totalStars()}</span></div>
+   <button class="ib" data-a="snd" aria-label="الصوت">${sound?'🔊':'🔇'}</button>
+  </header>`;
+}
+
+/* ---------- screens ---------- */
+function home(){
+  const medals=Array.from({length:10},(_,i)=>i+1).map(n=>`<div class="medal ${mastered(n)?'on':''}" style="background:${col(n)}"><span class="eq">${n}</span></div>`).join('');
+  return header('جداول الضرب')+`<main>
+   <p class="say">هيا نتعلّم الضرب معًا!</p>
+   <div class="menu">
+    <button class="card" style="background:var(--coral)" data-a="concept"><span class="ic">🤔</span>ما هو الضرب؟<small>نفهم الفكرة بالصور</small></button>
+    <button class="card" style="background:var(--violet)" data-a="learn"><span class="ic">📖</span>تعلّم الجداول<small>جدول من 1 إلى 10</small></button>
+    <button class="card" style="background:var(--mint)" data-a="prep"><span class="ic">🎯</span>تمرّن<small>أسئلة بالصور</small></button>
+    <button class="card" style="background:#F59E0B" data-a="speed"><span class="ic">⚡</span>تحدّي السرعة<small>60 ثانية</small></button>
+   </div>
+   <div class="medals" aria-label="تقدّمك في الجداول">${medals}</div>
+   <p class="note">النجمة فوق الجدول تعني أنك أتقنته.</p>
+  </main>`;
+}
+
+const SLIDES=4;
+function concept(){
+  const s=S.slide; let body='';
+  if(s===0){
+    body=`<p class="say">الضرب هو طريقة سريعة لعدّ <b>مجموعات متساوية</b>.</p>
+      ${groupsVis(3,4,'🍎')}
+      <p class="say">هنا 3 أطباق، وفي كل طبق 4 تفاحات.</p>`;
+  }else if(s===1){
+    body=`<p class="say">نجمع التفاحات في كل الأطباق:</p>
+      <div class="sums eq"><span class="chip">4</span>+<span class="chip">4</span>+<span class="chip">4</span>=<span class="chip" style="background:var(--sun)">12</span></div>
+      ${groupsVis(3,4,'🍎')}
+      <p class="say">لنكتبها باختصار: <span class="eq big" style="font-size:1.6em">3 × 4 = 12</span></p>
+      <p class="note">تُقرأ «ثلاثة ضرب أربعة يساوي اثني عشر». العلامة × تعني «مجموعات من».</p>`;
+  }else if(s===2){
+    body=`<p class="say">جرّب بنفسك! اختر عدد المجموعات وعدد الأشياء في كل مجموعة.</p>
+      <div class="row">
+        <div class="row" style="background:var(--card);border-radius:1em;padding:.4em .8em"><button class="ib" data-a="g-" aria-label="أنقص مجموعة">−</button><b>مجموعات: <span class="eq">${S.g}</span></b><button class="ib" data-a="g+" aria-label="زِد مجموعة">+</button></div>
+        <div class="row" style="background:var(--card);border-radius:1em;padding:.4em .8em"><button class="ib" data-a="p-" aria-label="أنقص عددًا">−</button><b>في كل مجموعة: <span class="eq">${S.p}</span></b><button class="ib" data-a="p+" aria-label="زِد عددًا">+</button></div>
+      </div>
+      ${groupsVis(S.g,S.p,'🍓')}
+      <div class="sums eq">${Array(S.g).fill(S.p).join(' + ')} = ${S.g*S.p}</div>
+      <div class="big eq">${S.g} × ${S.p} = ${S.g*S.p}</div>
+      <button class="btn ghost" data-a="say-gp">🔊 اسمعها بالإنجليزية</button>`;
+  }else{
+    body=`<p class="say">الترتيب لا يغيّر الناتج! نقلب الصورة فنحصل على نفس العدد.</p>
+      <div class="row" style="gap:5vmin">
+        <div class="hint">${arrVis(3,4,'⭐',5)}<div class="big eq" style="font-size:2em">3 × 4 = 12</div></div>
+        <div class="hint">${arrVis(4,3,'⭐',5)}<div class="big eq" style="font-size:2em">4 × 3 = 12</div></div>
+      </div>
+      <p class="note">هذا يوفّر عليك الحفظ: إن عرفت 3 × 7 عرفت 7 × 3.</p>`;
+  }
+  const dots=Array.from({length:SLIDES},(_,i)=>`<i class="dot ${i===s?'on':''}"></i>`).join('');
+  return header('ما هو الضرب؟',true)+`<main>${body}</main>
+   <div class="dots">${dots}</div>
+   <div class="nav">
+     <button class="btn ghost" data-a="sprev" ${s===0?'disabled':''}>السابق</button>
+     ${s<SLIDES-1?`<button class="btn" data-a="snext">التالي</button>`:`<button class="btn sun" data-a="learn">هيا نتعلّم الجداول</button>`}
+   </div>`;
+}
+
+function picker(title,next){
+  const sel=next==='toggle';
+  let h=`<div class="tgrid">`;
+  for(let n=1;n<=10;n++){
+    h+=`<button class="tb ${mastered(n)?'star':''} ${sel&&S.sel.has(n)?'sel':''}" style="--c:${col(n)}" data-a="${sel?'tg':'tbl'}" data-n="${n}"><span class="eq">${n}</span></button>`;
+  }
+  return h+'</div>';
+}
+function learnPick(){
+  return header('اختر جدولًا',true)+`<main>
+    <p class="say">أيّ جدول تريد أن تتعلّم؟</p>${picker('', 'open')}</main>`;
+}
+
+function learnView(){
+  const n=S.n,r=S.row,c=col(n);
+  const rows=Array.from({length:10},(_,i)=>i+1).map(i=>`<button class="rw ${i===r?'on':''}" style="--c:${c}" data-a="row" data-i="${i}">${eq(n,i)}</button>`).join('');
+  const skip=Array.from({length:10},(_,i)=>`<span class="sk ${i+1<=r?'on':''}" style="--c:${c}">${n*(i+1)}</span>`).join('');
+  return header(`جدول <span class="eq">${n}</span>`,true)+`<div style="flex:1;min-height:0;display:flex;flex-direction:column;gap:1.4vmin">
+   <div class="tview" style="--c:${c}">
+    <div class="rows">${rows}</div>
+    <div class="stage">
+      <div class="big eq" style="color:${c}">${n} × ${r} = ${n*r}</div>
+      ${groupsVis(r,n,emo(n))}
+      <div class="sums eq" style="font-size:1.3em">${Array(r).fill(n).join(' + ')}${r>1?` = ${n*r}`:''}</div>
+      <div class="skip" aria-label="العدّ بالقفزات">${skip}</div>
+      <div class="tip">💡 ${TIPS[n]}</div>
+    </div>
+   </div>
+   <div class="nav">
+     <button class="btn ghost" data-a="tprev" ${n===1?'disabled':''}>الجدول السابق</button>
+     <button class="btn ghost" data-a="say-r">🔊</button>
+     <button class="btn mint" data-a="prac-this">تمرّن على جدول ${n}</button>
+     <button class="btn ghost" data-a="tnext" ${n===10?'disabled':''}>الجدول التالي</button>
+   </div></div>`;
+}
+
+function prepScreen(){
+  return header('تمرّن',true)+`<main>
+    <p class="say">اختر جدولًا أو أكثر، ثم ابدأ.</p>
+    ${picker('', 'toggle')}
+    <div class="row">
+      <button class="btn ghost" data-a="all">كل الجداول</button>
+      <button class="btn mint" data-a="start" ${S.sel.size?'':'disabled'}>ابدأ التمرين</button>
+    </div></main>`;
+}
+
+/* ---------- practice engine ---------- */
+function newSession(mode,tables){
+  S.mode=mode;
+  S.ses={mode,tables,i:0,score:0,miss:0,last:null,q:null,done:false,left:60,locked:false,tried:false};
+  nextQ();
+}
+function rnd(n){return Math.floor(Math.random()*n)}
+function nextQ(){
+  const s=S.ses; let q,tries=0;
+  do{
+    const t=s.tables[rnd(s.tables.length)], b=1+rnd(10);
+    const flip=Math.random()<.5;
+    q={t,a:flip?b:t,b:flip?t:b,type:(s.mode==='practice'&&Math.random()<.3)?'missing':'mc'};
+    tries++;
+  }while(s.last&&s.last.a===q.a&&s.last.b===q.b&&tries<10);
+  const ans=q.type==='mc'?q.a*q.b:q.b;
+  const set=new Set([ans]);
+  const cand=q.type==='mc'?[q.a*(q.b+1),q.a*(q.b-1),(q.a+1)*q.b,(q.a-1)*q.b,ans+10,ans-10,ans+2,ans-2]
+                           :[q.b+1,q.b-1,q.b+2,q.b-2,q.a,10-q.b+1];
+  cand.sort(()=>Math.random()-.5);
+  const lo=q.type==='mc'?1:1;
+  for(const c of cand){ if(set.size>=4)break; if(c>=lo&&c!==ans&&(q.type==='mc'||c<=10))set.add(c) }
+  let k=1; while(set.size<4){set.add(ans+k*(k%2?1:-1)>0?ans+k*(k%2?1:-1):ans+k);k++}
+  q.ans=ans;q.opts=[...set].sort(()=>Math.random()-.5);q.wrong=new Set();
+  s.q=q;s.last=q;s.tried=false;s.locked=false;dly=0;
+}
+const TOTAL=10;
+function practice(){
+  const s=S.ses,q=s.q;
+  if(s.done)return result();
+  const speed=s.mode==='speed';
+  const prog_=speed?`<div class="bar"><i id="tbar" style="width:${s.left/60*100}%"></i></div><p class="note">الوقت: <b class="eq" id="tleft">${s.left}</b> · الصحيح: <b class="eq">${s.score}</b></p>`
+                   :`<div class="bar"><i style="width:${s.i/TOTAL*100}%"></i></div><p class="note">السؤال <b class="eq">${s.i+1}</b> من <b class="eq">${TOTAL}</b></p>`;
+  const qh=q.type==='mc'?`<div class="q"><span>${q.a}</span><span class="m">×</span><span>${q.b}</span><span class="m">=</span><span>?</span></div>`
+                        :`<div class="q"><span>${q.a}</span><span class="m">×</span><span class="m" style="background:var(--sun);border-radius:.2em;padding:0 .3em">?</span><span class="m">=</span><span>${q.a*q.b}</span></div>`;
+  const hint=q.wrong.size?`<div class="hint">${arrVis(q.a,q.b,emo(q.t),q.a*q.b>60?3:4.4)}<p class="note">${q.a} صفوف، وفي كل صف ${q.b}. عُدّها!</p></div>`:'';
+  return header(speed?'تحدّي السرعة':'تمرّن',true)+`<main>
+    ${prog_}
+    ${q.type==='missing'?'<p class="say">أيّ عدد ناقص؟</p>':''}
+    <div id="qbox">${qh}</div>
+    <div class="opts">${q.opts.map(o=>`<button class="opt ${q.wrong.has(o)?'bad':''}" data-a="ans" data-v="${o}">${o}</button>`).join('')}</div>
+    <div class="fb ${q.wrong.size?'no':''}" id="fb">${q.wrong.size?'حاول مرة أخرى، انظر إلى الصورة':''}</div>
+    ${hint}
+  </main>`;
+}
+function answer(v,btn){
+  const s=S.ses,q=s.q; if(s.locked)return;
+  if(v===q.ans){
+    s.locked=true; btn.classList.add('good'); sfx.ok();
+    const first=!s.tried;
+    if(first){s.score++;rec(q.t,true)}
+    const fb=$('#fb'); fb.className='fb ok'; fb.textContent=first?['أحسنت!','ممتاز!','رائع!','برافو!'][rnd(4)]:'صحيح!';
+    say(`${q.a} times ${q.b} equals ${q.a*q.b}`);
+    setTimeout(()=>{ if(s.done)return; s.i++; if(s.mode!=='speed'&&s.i>=TOTAL){finish()}else{nextQ();render()} },first?900:1300);
+  }else{
+    if(!s.tried){s.tried=true;s.miss++;rec(q.t,false)}
+    q.wrong.add(v); sfx.no(); render();
+    const qb=$('#qbox'); if(qb){qb.classList.add('shake')}
+  }
+}
+function finish(){ const s=S.ses; s.done=true; clearInterval(timer); sfx.win(); render() }
+function result(){
+  const s=S.ses, speed=s.mode==='speed';
+  const st=speed?(s.score>=15?3:s.score>=8?2:s.score>=3?1:0):(s.score>=9?3:s.score>=7?2:s.score>=4?1:0);
+  const stars=[0,1,2].map(i=>`<span class="${i<st?'':'o'}">⭐</span>`).join('');
+  const msg=st===3?'أنت بطل الضرب!':st===2?'عمل جميل! اقتربت من الإتقان.':st===1?'بداية جيدة، تمرّن أكثر وستتحسّن.':'لا بأس! جرّب جدولًا واحدًا وكرّره.';
+  return header('النتيجة',true)+`<main>
+    <div class="stars">${stars}</div>
+    <p class="say">${speed?`أجبت <b class="eq">${s.score}</b> إجابة صحيحة في 60 ثانية.`:`أجبت <b class="eq">${s.score}</b> من <b class="eq">${TOTAL}</b> من المحاولة الأولى.`}</p>
+    <p class="say">${msg}</p>
+    <div class="row"><button class="btn mint" data-a="again">مرة أخرى</button><button class="btn ghost" data-a="home">الرئيسية</button></div>
+  </main>`;
+}
+function startSpeed(){
+  newSession('speed',[1,2,3,4,5,6,7,8,9,10]);
+  S.screen='practice'; render();
+  timer=setInterval(()=>{
+    const s=S.ses; s.left--;
+    const tl=$('#tleft'),tb=$('#tbar'); if(tl)tl.textContent=s.left; if(tb)tb.style.width=(s.left/60*100)+'%';
+    if(s.left<=0)finish();
+  },1000);
+}
+
+/* ---------- render + events ---------- */
+function render(){
+  const r=$('#root');
+  const v={home,concept,learn:learnPick,table:learnView,prep:prepScreen,practice}[S.screen]();
+  r.innerHTML=v;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a]'); if(!b)return;
+  const a=b.dataset.a, n=+b.dataset.n;
+  switch(a){
+    case 'home': go('home'); break;
+    case 'snd': sound=!sound; render(); break;
+    case 'concept': go('concept',{slide:0}); break;
+    case 'snext': S.slide++; dly=0; render(); break;
+    case 'sprev': S.slide--; dly=0; render(); break;
+    case 'g+': S.g=Math.min(10,S.g+1); dly=0; render(); break;
+    case 'g-': S.g=Math.max(1,S.g-1); dly=0; render(); break;
+    case 'p+': S.p=Math.min(10,S.p+1); dly=0; render(); break;
+    case 'p-': S.p=Math.max(1,S.p-1); dly=0; render(); break;
+    case 'say-gp': sayEq(S.g,S.p); break;
+    case 'learn': go('learn'); break;
+    case 'tbl': go('table',{n,row:1}); break;
+    case 'row': S.row=+b.dataset.i; dly=0; render(); sayEq(S.n,S.row); break;
+    case 'say-r': sayEq(S.n,S.row); break;
+    case 'tprev': S.n--; S.row=1; dly=0; render(); break;
+    case 'tnext': S.n++; S.row=1; dly=0; render(); break;
+    case 'prac-this': S.sel=new Set([S.n]); newSession('practice',[S.n]); go('practice'); break;
+    case 'prep': go('prep'); break;
+    case 'tg': S.sel.has(n)?S.sel.delete(n):S.sel.add(n); render(); break;
+    case 'all': S.sel=new Set([1,2,3,4,5,6,7,8,9,10]); render(); break;
+    case 'start': newSession('practice',[...S.sel]); go('practice'); break;
+    case 'speed': startSpeed(); break;
+    case 'ans': answer(+b.dataset.v,b); break;
+    case 'again': if(S.ses.mode==='speed'){startSpeed()}else{newSession('practice',S.ses.tables);go('practice')} break;
+  }
+});
+render();
+</script>
+
+</body></html>
