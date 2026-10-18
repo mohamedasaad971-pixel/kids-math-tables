@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#F3F6FC">
+<style>
+  :root{color-scheme:light; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px)}
+  body{margin:0; font:14px system-ui,-apple-system,sans-serif}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>مغامرة الجمع حتى ٢٠</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;800&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+/* التخطيط: شريط علوي للتقدّم + مسرح حسّي في الوسط (مكعبات/إطار العشرة/خط الأعداد) + صفّ إجابات كبير أسفله */
+:root{
+  --bg:#F4F6FB; --surface:#FFFFFF; --surface-2:#E9EEF8; --surface-3:#DCE4F3;
+  --ink:#19222F; --ink-soft:#5B6A84; --line:#CFD9EC;
+  --accent:#2D6CDF; --accent-ink:#FFFFFF; --good:#2E8B57; --warn:#E4572E; --star:#F2C14E;
+  /* ألوان قضبان كوزينير: لكل عدد لونه الثابت، كما في صفوف الرياضيات */
+  --c1:#EDE7D6; --c2:#E4572E; --c3:#8CC63F; --c4:#7D5BA6; --c5:#F2C14E;
+  --c6:#2E8B57; --c7:#46505F; --c8:#8B5E3C; --c9:#2D6CDF; --c10:#F08A24;
+  --font-display:'Baloo Bhaijaan 2','Tajawal',system-ui,sans-serif;
+  --font-body:'Tajawal',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --radius:18px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#121A26; --surface:#1C2533; --surface-2:#263245; --surface-3:#32405A;
+  --ink:#EEF3FB; --ink-soft:#A6B4CB; --line:#35445F;
+  --accent:#6FA0FF; --accent-ink:#0E1420; --good:#4FBE85; --warn:#FF8360; --star:#FFD36B;
+  --c1:#E7E1D1; --c7:#8795A8; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#121A26; --surface:#1C2533; --surface-2:#263245; --surface-3:#32405A;
+  --ink:#EEF3FB; --ink-soft:#A6B4CB; --line:#35445F;
+  --accent:#6FA0FF; --accent-ink:#0E1420; --good:#4FBE85; --warn:#FF8360; --star:#FFD36B;
+  --c1:#E7E1D1; --c7:#8795A8; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-body); font-size:16px; line-height:1.6;
+  direction:rtl;
+}
+.wrap{
+  min-height:100%; display:flex; flex-direction:column; gap:14px;
+  max-width:860px; margin:0 auto;
+  padding-left:max(16px, env(safe-area-inset-left,0px));
+  padding-right:max(16px, env(safe-area-inset-right,0px));
+  padding-block:14px 20px;
+}
+h1,h2,h3{font-family:var(--font-display); margin:0; text-wrap:balance; line-height:1.25}
+button{font-family:inherit; font-size:inherit; color:inherit; cursor:pointer}
+:focus-visible{outline:3px solid var(--accent); outline-offset:3px; border-radius:10px}
+[hidden]{display:none!important}
+
+/* ===== الشريط العلوي ===== */
+.topbar{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:9px; margin-inline-end:auto; min-width:0}
+.brand .mark{
+  width:38px;height:38px;border-radius:12px;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:19px;flex:none;
+}
+.brand b{font-family:var(--font-display);font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.iconbtn{
+  width:44px;height:44px;border-radius:13px;border:1px solid var(--line);background:var(--surface);
+  display:grid;place-items:center;font-size:19px;padding:0;flex:none;
+}
+.iconbtn:hover{background:var(--surface-2)}
+.iconbtn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* ===== البطاقات ===== */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.muted{color:var(--ink-soft)}
+.small{font-size:13.5px}
+
+/* ===== خريطة المراحل ===== */
+.levels{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-top:12px}
+.lvl{
+  display:flex;gap:12px;align-items:flex-start;text-align:start;width:100%;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px;
+}
+.lvl:hover:not(:disabled){border-color:var(--accent);background:var(--surface-2)}
+.lvl:disabled{opacity:.5;cursor:not-allowed}
+.lvl .num{
+  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;flex:none;
+  font-family:var(--font-display);font-weight:800;font-size:20px;color:#17202C;
+}
+.lvl h3{font-size:16px}
+.lvl .stars{letter-spacing:2px;font-size:14px;color:var(--star)}
+.lvl .stars i{color:var(--line);font-style:normal}
+
+/* ===== مسرح اللعب ===== */
+.gamehead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.chip{
+  background:var(--surface-2);border:1px solid var(--line);border-radius:999px;
+  padding:4px 12px;font-size:13.5px;font-weight:500;
+}
+.bar{height:12px;border-radius:999px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:inline-size .35s ease}
+.stage{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 14px; display:grid; place-items:center; gap:14px; min-height:210px;
+}
+.prompt{font-family:var(--font-display);font-weight:600;font-size:19px;text-align:center}
+
+/* مجموعات المكعبات */
+.groups{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.group{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;padding:10px;border-radius:14px;background:var(--surface-2)}
+.group.narrow{grid-template-columns:repeat(3,minmax(0,1fr))}
+.dot{width:34px;height:34px;border-radius:50%;border:2px solid rgba(0,0,0,.18);box-shadow:inset 0 -4px 0 rgba(0,0,0,.12)}
+.op{font-family:var(--font-display);font-size:34px;font-weight:800;color:var(--ink-soft)}
+.dot.lit{transform:scale(1.22);box-shadow:0 0 0 4px var(--star)}
+.dot{transition:transform .18s ease, box-shadow .18s ease}
+
+/* إطار العشرة */
+.frames{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;direction:ltr}
+.tenframe{display:grid;grid-template-columns:repeat(5,42px);grid-auto-rows:42px;gap:3px;background:var(--line);border:3px solid var(--line);border-radius:10px}
+.tenframe .cell{background:var(--surface-2);display:grid;place-items:center}
+.tenframe .cell .dot{width:30px;height:30px}
+@media (max-width:420px){ .tenframe{grid-template-columns:repeat(5,34px);grid-auto-rows:34px} .tenframe .cell .dot{width:24px;height:24px} .dot{width:28px;height:28px} }
+
+/* خط الأعداد وقضبان كوزينير */
+.viz{width:100%;max-width:620px;direction:ltr}
+.viz svg{width:100%;height:auto;display:block}
+
+/* المعادلة */
+.equation{
+  direction:ltr; display:flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--font-display); font-weight:800; font-size:clamp(30px,9vw,46px);
+  font-variant-numeric:tabular-nums;
+}
+.equation .q{
+  min-width:1.6em;text-align:center;border-bottom:5px dashed var(--accent);color:var(--accent);
+}
+.equation .q.filled{border-bottom-color:var(--good);color:var(--good)}
+.equation .term{padding:0 .12em;border-radius:10px}
+
+/* الإجابات */
+.answers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ans{
+  min-height:76px;border-radius:16px;border:2px solid var(--line);background:var(--surface);
+  font-family:var(--font-display);font-weight:800;font-size:32px;font-variant-numeric:tabular-nums;
+  display:grid;place-items:center;transition:transform .12s ease;
+}
+.ans:hover:not(:disabled){border-color:var(--accent);transform:translateY(-2px)}
+.ans.right{background:var(--good);border-color:var(--good);color:#fff}
+.ans.wrong{background:var(--warn);border-color:var(--warn);color:#fff}
+.ans:disabled{cursor:default}
+.pad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.pad button{min-height:58px;border-radius:14px;border:2px solid var(--line);background:var(--surface);font-family:var(--font-display);font-weight:800;font-size:24px}
+.pad button.go{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+.feedback{min-height:30px;text-align:center;font-family:var(--font-display);font-size:19px;font-weight:600}
+.feedback.ok{color:var(--good)} .feedback.no{color:var(--warn)}
+.toolrow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{
+  border-radius:14px;border:1px solid var(--line);background:var(--surface);padding:11px 16px;font-weight:700;
+}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn.ghost{background:transparent}
+
+/* شاشة المكافأة */
+.reward{text-align:center;display:grid;gap:12px;place-items:center;padding:26px 16px}
+.bigstars{font-size:52px;letter-spacing:6px;color:var(--star)}
+.bigstars i{color:var(--line);font-style:normal}
+
+/* لوحة الأهل */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--surface-2);border-radius:14px;padding:12px}
+.stat b{display:block;font-family:var(--font-display);font-size:26px;font-variant-numeric:tabular-nums}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:start}
+th{font-weight:700;color:var(--ink-soft);font-size:13px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:700}
+.pill.g{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.pill.w{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.pill.n{background:var(--surface-3);color:var(--ink-soft)}
+.gridfacts{display:grid;grid-template-columns:repeat(11,1fr);gap:3px;direction:ltr;max-width:460px}
+.gridfacts div{aspect-ratio:1;border-radius:4px;background:var(--surface-2);font-size:9px;display:grid;place-items:center;color:var(--ink-soft)}
+.gridfacts div.k{background:var(--good)} .gridfacts div.s{background:var(--star)} .gridfacts div.b{background:var(--warn)}
+ul.notes{padding-inline-start:20px;margin:8px 0 0}
+ul.notes li{margin-bottom:5px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">+</span>
+      <b>مغامرة الجمع</b>
+    </div>
+    <button class="iconbtn" id="btnSound" aria-pressed="true" title="الصوت" aria-label="تشغيل الصوت أو إيقافه">🔊</button>
+    <button class="iconbtn" id="btnNum" title="شكل الأرقام" aria-label="تبديل شكل الأرقام">١٢</button>
+    <button class="iconbtn" id="btnParents" title="لوحة الأهل" aria-label="لوحة الأهل">📊</button>
+    <button class="iconbtn" id="btnHome" title="القائمة" aria-label="العودة إلى القائمة">🏠</button>
+  </header>
+
+  <!-- ====== الصفحة الرئيسية ====== -->
+  <section id="screenHome">
+    <div class="card">
+      <h1 style="font-size:24px">تعلّم الجمع من ١ إلى ٢٠</h1>
+      <p class="muted" style="margin:6px 0 0">سبع مراحل مرتّبة: نبدأ بأشياء نعدّها بأيدينا، ثم صور وإطار العشرة، ثم الأرقام وحدها.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="btn primary" id="btnPlay">ابدأ اللعب</button>
+        <button class="btn" id="btnMode">طريقة الإجابة: اختيار</button>
+      </div>
+    </div>
+    <div class="levels" id="levelList"></div>
+  </section>
+
+  <!-- ====== شاشة اللعب ====== -->
+  <section id="screenGame" hidden>
+    <div class="gamehead">
+      <span class="chip" id="chipLevel">المرحلة ١</span>
+      <span class="chip" id="chipScore">⭐ ٠</span>
+      <span class="chip" id="chipCount">١ / ١٠</span>
+    </div>
+    <div class="bar" style="margin:10px 0 12px"><span id="roundBar" style="inline-size:0%"></span></div>
+
+    <div class="stage">
+      <p class="prompt" id="prompt">كم المجموع؟</p>
+      <div id="viz"></div>
+      <div class="equation" id="equation"></div>
+    </div>
+
+    <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+    <div id="answers" class="answers"></div>
+    <div id="padWrap" class="pad" hidden></div>
+
+    <div class="toolrow" style="margin-top:12px">
+      <button class="btn" id="btnHint">ساعِدني · نعدّ معًا</button>
+      <button class="btn ghost" id="btnRepeat">🔁 أعد السؤال</button>
+    </div>
+  </section>
+
+  <!-- ====== شاشة المكافأة ====== -->
+  <section id="screenReward" hidden>
+    <div class="card reward">
+      <h2 style="font-size:28px" id="rewardTitle">أحسنت!</h2>
+      <div class="bigstars" id="rewardStars" aria-hidden="true"></div>
+      <p class="muted" id="rewardText"></p>
+      <div class="toolrow">
+        <button class="btn primary" id="btnAgain">جولة أخرى</button>
+        <button class="btn" id="btnNext">المرحلة التالية</button>
+        <button class="btn ghost" id="btnBackHome">القائمة</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== لوحة الأهل ====== -->
+  <section id="screenParents" hidden>
+    <div class="card">
+      <h2 style="font-size:21px">لوحة الأهل والمعلّم</h2>
+      <p class="muted small" style="margin:4px 0 12px">كل الأرقام محفوظة في هذا الجهاز فقط، وتتجدّد بعد كل سؤال.</p>
+      <div class="stats" id="statsBox"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3 style="font-size:17px">تقدّم المراحل</h3>
+      <div class="tablewrap"><table id="levelTable"></table></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3 style="font-size:17px">خريطة حقائق الجمع</h3>
+      <p class="muted small" style="margin:4px 0 10px">الصفوف والأعمدة من ٠ إلى ١٠. أخضر = مُتقَن، أصفر = يحتاج تكرارًا، أحمر = خطأ متكرر.</p>
+      <div class="gridfacts" id="factGrid"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3 style="font-size:17px">الأساس العلمي للبرنامج</h3>
+      <ul class="notes small">
+        <li><b>المحسوس ثم المصوَّر ثم المجرّد:</b> المراحل الأولى بمكعبات تُعَدّ، ثم إطار العشرة وخط الأعداد، وأخيرًا الأرقام وحدها.</li>
+        <li><b>إطار العشرة:</b> عشر خانات ثابتة تجعل الطفل يرى «كم بقي للعشرة» دون عدّ.</li>
+        <li><b>قضبان كوزينير:</b> لكل عدد لون ثابت، فيرتبط العدد بصورة ولون يسهل تذكّرهما.</li>
+        <li><b>العدّ التصاعدي:</b> ٧ + ٢ تُحَلّ بقفزتين على خط الأعداد، لا بعدّ السبعة من أولها.</li>
+        <li><b>إكمال العشرة:</b> ٨ + ٥ تصبح ٨ + ٢ + ٣، وهي الاستراتيجية الأساسية للجمع فوق العشرة.</li>
+        <li><b>التكرار المتباعد:</b> كل سؤال يُخطئ فيه الطفل يعود تلقائيًا بعد عدة أسئلة في الجولة نفسها.</li>
+        <li><b>التغذية الراجعة الفورية:</b> الخطأ لا يُعاقَب؛ يظهر العدّ المحسوس ثم يُعاد السؤال.</li>
+        <li><b>جلسة قصيرة:</b> عشرة أسئلة فقط في الجولة، بما يناسب انتباه طفل في الخامسة.</li>
+      </ul>
+      <div class="toolrow" style="justify-content:flex-start;margin-top:14px">
+        <button class="btn" id="btnReset">محو كل البيانات</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ========== أدوات عامة ========== */
+var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+var WORDS = ["صفر","واحد","اثنان","ثلاثة","أربعة","خمسة","ستة","سبعة","ثمانية","تسعة","عشرة",
+  "أحد عشر","اثنا عشر","ثلاثة عشر","أربعة عشر","خمسة عشر","ستة عشر","سبعة عشر","ثمانية عشر","تسعة عشر","عشرون"];
+var ROD = ["var(--c1)","var(--c1)","var(--c2)","var(--c3)","var(--c4)","var(--c5)","var(--c6)","var(--c7)","var(--c8)","var(--c9)","var(--c10)"];
+function rodColor(n){ return ROD[((n-1)%10)+1] || "var(--c5)"; }
+function $(id){ return document.getElementById(id); }
+function rnd(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function word(n){ return WORDS[n] !== undefined ? WORDS[n] : String(n); }
+
+var STORE_KEY = "addition-adventure-ar-v1";
+var S = {
+  sound:true, numerals:"ar", input:"choice",
+  unlocked:1, stars:[0,0,0,0,0,0,0],
+  done:[0,0,0,0,0,0,0], right:[0,0,0,0,0,0,0], wrong:[0,0,0,0,0,0,0],
+  facts:{}, rounds:0, totalMs:0, totalAnswers:0
+};
+function load(){
+  try{
+    var raw = localStorage.getItem(STORE_KEY);
+    if(raw){ var o = JSON.parse(raw); for(var k in o){ if(Object.prototype.hasOwnProperty.call(S,k)) S[k]=o[k]; } }
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+
+function num(n){
+  var s = String(n);
+  return S.numerals === "ar" ? s.replace(/[0-9]/g, function(d){ return AR_DIGITS[+d]; }) : s;
+}
+
+/* ========== الصوت ========== */
+var actx = null;
+function tone(freqs, dur){
+  if(!S.sound) return;
+  try{
+    if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if(actx.state === "suspended") actx.resume();
+    var t0 = actx.currentTime;
+    freqs.forEach(function(f,i){
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t0 + i*dur);
+      g.gain.exponentialRampToValueAtTime(0.18, t0 + i*dur + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + i*dur + dur);
+      o.connect(g); g.connect(actx.destination);
+      o.start(t0 + i*dur); o.stop(t0 + i*dur + dur + 0.02);
+    });
+  }catch(e){}
+}
+var goodSound = function(){ tone([523,659,784], 0.14); };
+var badSound  = function(){ tone([330,262], 0.18); };
+var popSound  = function(){ tone([700], 0.08); };
+var winSound  = function(){ tone([523,659,784,1047], 0.16); };
+
+var arVoice = null;
+function pickVoice(){
+  try{
+    var vs = window.speechSynthesis ? speechSynthesis.getVoices() : [];
+    for(var i=0;i<vs.length;i++){ if((vs[i].lang||"").toLowerCase().indexOf("ar") === 0){ arVoice = vs[i]; return; } }
+  }catch(e){}
+}
+if(window.speechSynthesis){ pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+function speak(text){
+  if(!S.sound || !window.speechSynthesis) return;
+  try{
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "ar-SA"; u.rate = 0.85; u.pitch = 1.15;
+    if(arVoice) u.voice = arVoice;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function stopSpeak(){ try{ if(window.speechSynthesis) speechSynthesis.cancel(); }catch(e){} }
+
+/* ========== المراحل ========== */
+var LEVELS = [
+  { name:"نعدّ ونجمع حتى ٥", hint:"مكعبات نعدّها واحدًا واحدًا", rep:"groups",
+    gen:function(){ var a=rnd(1,4), b=rnd(1,5-a); return {a:a,b:b}; } },
+  { name:"العدّ التصاعدي (+١، +٢، +٣)", hint:"نبدأ من العدد الكبير ونقفز", rep:"line",
+    gen:function(){ var a=rnd(2,9), b=rnd(1,3); return {a:a,b:b}; } },
+  { name:"الجمع حتى ١٠", hint:"إطار العشرة", rep:"frame",
+    gen:function(){ var a=rnd(1,9), b=rnd(1,10-a); return {a:a,b:b}; } },
+  { name:"الأعداد المتماثلة", hint:"٣ + ٣ ، ٤ + ٤ ...", rep:"double",
+    gen:function(){ var a=rnd(1,10); return {a:a,b:a}; } },
+  { name:"مكمّلات العشرة", hint:"كم يلزم ليصير العدد عشرة؟", rep:"frame",
+    gen:function(){ var a=rnd(1,9); return {a:a,b:10-a}; } },
+  { name:"إكمال العشرة", hint:"٨ + ٥ = ٨ + ٢ + ٣", rep:"makeTen",
+    gen:function(){ var a=rnd(6,9), b=rnd(11-a+1,9); if(a+b>18) b=18-a; return {a:a,b:b}; } },
+  { name:"الجمع حتى ٢٠", hint:"بالأرقام وحدها", rep:"bars",
+    gen:function(){ var a=rnd(2,15), b=rnd(1,Math.min(10,20-a)); return {a:a,b:b}; } }
+];
+var ROUND_LEN = 10;
+
+/* ========== حالة الجولة ========== */
+var R = { level:0, i:0, firstTry:0, q:null, answered:false, tries:0, queue:[], t0:0, lastReview:-9 };
+
+/* ========== الشاشات ========== */
+function show(name){
+  ["Home","Game","Reward","Parents"].forEach(function(s){
+    $("screen"+s).hidden = (s !== name);
+  });
+  if(name === "Parents") renderParents();
+  if(name === "Home") renderLevels();
+}
+
+/* ========== خريطة المراحل ========== */
+function starStr(n){
+  var out = "";
+  for(var i=0;i<3;i++) out += (i<n) ? "★" : "<i>★</i>";
+  return out;
+}
+function renderLevels(){
+  var box = $("levelList"); box.innerHTML = "";
+  LEVELS.forEach(function(L, idx){
+    var b = document.createElement("button");
+    b.className = "lvl"; b.type = "button";
+    b.disabled = idx >= S.unlocked;
+    b.innerHTML =
+      '<span class="num" style="background:'+rodColor(idx+1)+'">'+num(idx+1)+'</span>'+
+      '<span style="min-width:0"><h3>'+L.name+'</h3>'+
+      '<span class="muted small">'+(b.disabled ? "تُفتح بعد المرحلة السابقة" : L.hint)+'</span><br>'+
+      '<span class="stars">'+starStr(S.stars[idx])+'</span></span>';
+    b.addEventListener("click", function(){ startRound(idx); });
+    box.appendChild(b);
+  });
+  $("btnMode").textContent = "طريقة الإجابة: " + (S.input === "choice" ? "اختيار" : "لوحة أرقام");
+}
+
+/* ========== توليد الأسئلة ========== */
+function makeQuestion(){
+  var L = LEVELS[R.level];
+  // التكرار المتباعد: نعيد سؤالًا أخطأ فيه الطفل بعد ثلاثة أسئلة على الأقل
+  if(R.queue.length && R.i - R.lastReview >= 3 && Math.random() < 0.55){
+    R.lastReview = R.i;
+    return R.queue.shift();
+  }
+  var q = L.gen();
+  if(Math.random() < 0.5 && q.a !== q.b){ var t = q.a; q.a = q.b; q.b = t; }
+  return q;
+}
+function options(sum){
+  var set = [sum];
+  var cands = [sum+1, sum-1, sum+2, sum-2, sum+10, sum-10];
+  while(set.length < 3){
+    var c = pick(cands);
+    if(c > 0 && c <= 20 && set.indexOf(c) === -1) set.push(c);
+  }
+  for(var i=set.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=set[i]; set[i]=set[j]; set[j]=tmp; }
+  return set;
+}
+
+/* ========== الرسم الحسّي ========== */
+function dotEl(n){
+  var d = document.createElement("span");
+  d.className = "dot"; d.style.background = rodColor(n);
+  return d;
+}
+function groupEl(count, colorN, narrow){
+  var g = document.createElement("div");
+  g.className = "group" + (narrow ? " narrow" : "");
+  for(var i=0;i<count;i++) g.appendChild(dotEl(colorN));
+  return g;
+}
+function tenFrame(fills){ // fills: مصفوفة طولها ١٠ من أرقام الألوان أو null
+  var f = document.createElement("div");
+  f.className = "tenframe";
+  for(var i=0;i<10;i++){
+    var c = document.createElement("div"); c.className = "cell";
+    if(fills[i]) c.appendChild(dotEl(fills[i]));
+    f.appendChild(c);
+  }
+  return f;
+}
+function svgNumberLine(a, b){
+  var max = 20, pad = 18, w = 640, h = 150, step = (w - pad*2) / max;
+  var x = function(n){ return pad + n*step; };
+  var y = 108;
+  var s = '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="خط الأعداد">';
+  s += '<line x1="'+x(0)+'" y1="'+y+'" x2="'+x(max)+'" y2="'+y+'" stroke="var(--line)" stroke-width="4" stroke-linecap="round"/>';
+  for(var n=0;n<=max;n++){
+    var big = (n%5===0);
+    s += '<line x1="'+x(n)+'" y1="'+(y-(big?11:6))+'" x2="'+x(n)+'" y2="'+(y+(big?11:6))+'" stroke="var(--line)" stroke-width="'+(big?4:2)+'"/>';
+    s += '<text x="'+x(n)+'" y="'+(y+30)+'" text-anchor="middle" font-size="'+(big?15:12)+'" fill="var(--ink-soft)" font-family="Tajawal,sans-serif">'+num(n)+'</text>';
+  }
+  for(var i=0;i<b;i++){
+    var x1 = x(a+i), x2 = x(a+i+1), mx = (x1+x2)/2;
+    s += '<path d="M '+x1+' '+(y-12)+' Q '+mx+' '+(y-58)+' '+x2+' '+(y-12)+'" fill="none" stroke="var(--c10)" stroke-width="4" stroke-linecap="round"/>';
+    s += '<text x="'+mx+'" y="'+(y-46)+'" text-anchor="middle" font-size="14" fill="var(--c10)" font-family="Tajawal,sans-serif">+'+num(1)+'</text>';
+  }
+  s += '<circle cx="'+x(a)+'" cy="'+y+'" r="10" fill="'+rodColor(a)+'" stroke="var(--ink)" stroke-width="2"/>';
+  s += '<circle cx="'+x(a+b)+'" cy="'+y+'" r="10" fill="none" stroke="var(--accent)" stroke-width="4" stroke-dasharray="5 4"/>';
+  s += '</svg>';
+  return s;
+}
+function svgBars(a, b){
+  var max = 20, pad = 10, w = 640, h = 120, cell = (w - pad*2) / max;
+  var s = '<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="قضبان الأعداد">';
+  for(var n=0;n<max;n++){
+    s += '<rect x="'+(pad+n*cell)+'" y="18" width="'+cell+'" height="40" fill="none" stroke="var(--line)" stroke-width="1"/>';
+  }
+  s += '<rect x="'+pad+'" y="18" width="'+(a*cell)+'" height="40" rx="7" fill="'+rodColor(a)+'" stroke="rgba(0,0,0,.25)" stroke-width="2"/>';
+  s += '<text x="'+(pad + a*cell/2)+'" y="45" text-anchor="middle" font-size="20" font-family="Tajawal,sans-serif" fill="#15202E" font-weight="700">'+num(a)+'</text>';
+  s += '<rect x="'+(pad + a*cell)+'" y="18" width="'+(b*cell)+'" height="40" rx="7" fill="'+rodColor(b)+'" stroke="rgba(0,0,0,.25)" stroke-width="2"/>';
+  s += '<text x="'+(pad + a*cell + b*cell/2)+'" y="45" text-anchor="middle" font-size="20" font-family="Tajawal,sans-serif" fill="#15202E" font-weight="700">'+num(b)+'</text>';
+  s += '<line x1="'+pad+'" y1="70" x2="'+(pad + (a+b)*cell)+'" y2="70" stroke="var(--accent)" stroke-width="3"/>';
+  s += '<text x="'+(pad + (a+b)*cell/2)+'" y="95" text-anchor="middle" font-size="18" font-family="Tajawal,sans-serif" fill="var(--accent)" font-weight="700">؟</text>';
+  s += '</svg>';
+  return s;
+}
+
+function renderViz(q, reveal){
+  var L = LEVELS[R.level], box = $("viz");
+  box.innerHTML = ""; box.className = "";
+  var rep = L.rep, a = q.a, b = q.b;
+
+  if(rep === "groups"){
+    var row = document.createElement("div"); row.className = "groups";
+    row.appendChild(groupEl(a, a, true));
+    var op = document.createElement("span"); op.className = "op"; op.textContent = "+";
+    row.appendChild(op);
+    row.appendChild(groupEl(b, b, true));
+    box.appendChild(row);
+  } else if(rep === "double"){
+    var wrapD = document.createElement("div"); wrapD.className = "groups";
+    var col = document.createElement("div");
+    col.style.display = "grid"; col.style.gap = "8px";
+    col.appendChild(groupEl(a, a, false));
+    col.appendChild(groupEl(b, b, false));
+    wrapD.appendChild(col);
+    box.appendChild(wrapD);
+  } else if(rep === "line"){
+    var d = document.createElement("div"); d.className = "viz"; d.innerHTML = svgNumberLine(a, b);
+    box.appendChild(d);
+  } else if(rep === "bars"){
+    var d2 = document.createElement("div"); d2.className = "viz"; d2.innerHTML = svgBars(a, b);
+    box.appendChild(d2);
+  } else { // frame / makeTen
+    var fills1 = new Array(10).fill(null), fills2 = new Array(10).fill(null);
+    var i, slot = 0;
+    for(i=0;i<a;i++){ fills1[slot++] = a; }
+    for(i=0;i<b;i++){
+      if(slot < 10) fills1[slot++] = b;
+      else fills2[slot++ - 10] = b;
+    }
+    var fr = document.createElement("div"); fr.className = "frames";
+    fr.appendChild(tenFrame(fills1));
+    if(a + b > 10) fr.appendChild(tenFrame(fills2));
+    box.appendChild(fr);
+    if(reveal && rep === "makeTen"){
+      var need = 10 - a, rest = b - need;
+      var note = document.createElement("p");
+      note.className = "muted small"; note.style.textAlign = "center"; note.style.margin = "6px 0 0";
+      note.setAttribute("dir","rtl");
+      note.innerHTML = "نُكمل العشرة: " + num(a) + " + " + num(need) + " = " + num(10) +
+                       " ، وبقي " + num(rest) + " ← " + num(10) + " + " + num(rest) + " = <b>" + num(a+b) + "</b>";
+      box.appendChild(note);
+    }
+  }
+}
+
+function renderEquation(q, answer){
+  var eq = $("equation");
+  eq.innerHTML =
+    '<span class="term" style="color:'+rodColor(q.a)+'">'+num(q.a)+'</span>' +
+    '<span>+</span>' +
+    '<span class="term" style="color:'+rodColor(q.b)+'">'+num(q.b)+'</span>' +
+    '<span>=</span>' +
+    '<span class="q'+(answer!=null?" filled":"")+'" id="slot">'+(answer!=null?num(answer):"؟")+'</span>';
+}
+
+/* ========== الإجابات ========== */
+var padValue = "";
+function renderAnswers(q){
+  var box = $("answers"), pad = $("padWrap");
+  box.innerHTML = ""; pad.innerHTML = "";
+  if(S.input === "choice"){
+    box.hidden = false; pad.hidden = true;
+    options(q.a + q.b).forEach(function(v){
+      var b = document.createElement("button");
+      b.className = "ans"; b.type = "button"; b.textContent = num(v);
+      b.setAttribute("aria-label", word(v));
+      b.addEventListener("click", function(){ answer(v, b); });
+      box.appendChild(b);
+    });
+  } else {
+    box.hidden = true; pad.hidden = false; padValue = "";
+    for(var d=0; d<=9; d++){
+      (function(d){
+        var b = document.createElement("button"); b.type = "button"; b.textContent = num(d);
+        b.addEventListener("click", function(){
+          if(R.answered) return;
+          if(padValue.length < 2){ padValue += String(d); popSound(); renderEquation(R.q, parseInt(padValue,10)); }
+        });
+        pad.appendChild(b);
+      })(d);
+    }
+    var del = document.createElement("button"); del.type = "button"; del.textContent = "⌫";
+    del.addEventListener("click", function(){ padValue = padValue.slice(0,-1); renderEquation(R.q, padValue ? parseInt(padValue,10) : null); });
+    pad.appendChild(del);
+    var go = document.createElement("button"); go.type = "button"; go.className = "go"; go.textContent = "✔";
+    go.addEventListener("click", function(){ if(padValue !== "") answer(parseInt(padValue,10), null); });
+    pad.appendChild(go);
+  }
+}
+
+/* ========== سير اللعبة ========== */
+function startRound(level){
+  R = { level:level, i:0, firstTry:0, q:null, answered:false, tries:0, queue:[], t0:0, lastReview:-9 };
+  S.rounds++; save();
+  show("Game");
+  nextQuestion();
+}
+function nextQuestion(){
+  R.i++;
+  R.answered = false; R.tries = 0;
+  R.q = makeQuestion();
+  R.t0 = Date.now();
+  var L = LEVELS[R.level];
+  $("chipLevel").textContent = "المرحلة " + num(R.level+1) + " · " + L.name;
+  $("chipScore").textContent = "⭐ " + num(R.firstTry);
+  $("chipCount").textContent = num(R.i) + " / " + num(ROUND_LEN);
+  $("roundBar").style.inlineSize = Math.round(((R.i-1)/ROUND_LEN)*100) + "%";
+  $("feedback").textContent = ""; $("feedback").className = "feedback";
+  $("prompt").textContent = (L.rep === "makeTen") ? "أكمِل العشرة ثم اجمع الباقي" : "كم المجموع؟";
+  renderViz(R.q, false);
+  renderEquation(R.q, null);
+  renderAnswers(R.q);
+  sayQuestion();
+}
+function sayQuestion(){
+  speak("كم يساوي " + word(R.q.a) + " زائد " + word(R.q.b) + "؟");
+}
+function factKey(q){ var lo = Math.min(q.a,q.b), hi = Math.max(q.a,q.b); return lo + "+" + hi; }
+function recordFact(q, ok, ms){
+  var k = factKey(q);
+  var f = S.facts[k] || {r:0,w:0,ms:0,n:0};
+  if(ok){ f.r++; } else { f.w++; }
+  if(ok && ms){ f.ms += ms; f.n++; }
+  S.facts[k] = f;
+}
+
+var PRAISE = ["أحسنت!","ممتاز!","رائع جدًا!","بطل!","عمل جميل!"];
+var lastPraise = "";
+function praise(){
+  var p = pick(PRAISE);
+  while(p === lastPraise) p = pick(PRAISE);
+  lastPraise = p; return p;
+}
+
+function answer(value, btn){
+  if(R.answered) return;
+  var sum = R.q.a + R.q.b;
+  var ms = Date.now() - R.t0;
+  var ok = (value === sum);
+  R.tries++;
+
+  if(ok){
+    R.answered = true;
+    if(btn) btn.classList.add("right");
+    lockAnswers();
+    renderEquation(R.q, sum);
+    var first = (R.tries === 1);
+    if(first) R.firstTry++;
+    S.right[R.level]++; S.done[R.level]++;
+    S.totalAnswers++; S.totalMs += ms;
+    recordFact(R.q, first, ms);
+    save();
+    goodSound();
+    var msg = praise() + "  " + num(R.q.a) + " + " + num(R.q.b) + " = " + num(sum);
+    var fb = $("feedback"); fb.className = "feedback ok"; fb.textContent = msg;
+    speak(praise() + " " + word(R.q.a) + " زائد " + word(R.q.b) + " يساوي " + word(sum));
+    $("chipScore").textContent = "⭐ " + num(R.firstTry);
+    setTimeout(function(){
+      if(R.i >= ROUND_LEN) finishRound(); else nextQuestion();
+    }, 1700);
+  } else {
+    if(btn){ btn.classList.add("wrong"); btn.disabled = true; }
+    S.wrong[R.level]++;
+    recordFact(R.q, false, 0);
+    if(R.tries === 1 && !R.queue.some(function(x){ return x.a===R.q.a && x.b===R.q.b; })) R.queue.push({a:R.q.a,b:R.q.b});
+    save();
+    badSound();
+    var fb2 = $("feedback"); fb2.className = "feedback no";
+    fb2.textContent = "لا بأس، لنعدّ معًا";
+    speak("لا بأس، لنعدّ معًا");
+    padValue = ""; renderEquation(R.q, null);
+    setTimeout(hint, 700);
+  }
+}
+function lockAnswers(){
+  var bs = $("answers").querySelectorAll("button");
+  for(var i=0;i<bs.length;i++) bs[i].disabled = true;
+  var ps = $("padWrap").querySelectorAll("button");
+  for(var j=0;j<ps.length;j++) ps[j].disabled = true;
+}
+
+/* ========== المساعدة: نعدّ معًا ========== */
+var hintTimer = null;
+function hint(){
+  if(R.answered) return;
+  clearTimeout(hintTimer);
+  renderViz(R.q, true);
+  var dots = $("viz").querySelectorAll(".dot");
+  var L = LEVELS[R.level];
+  if(dots.length){
+    var k = 0;
+    var stepFn = function(){
+      if(k > 0) dots[k-1].classList.remove("lit");
+      if(k >= dots.length){ 
+        $("feedback").className = "feedback"; 
+        $("feedback").textContent = "المجموع " + num(R.q.a + R.q.b) + "… جرّب الآن";
+        speak("المجموع " + word(R.q.a + R.q.b));
+        return; 
+      }
+      dots[k].classList.add("lit");
+      popSound();
+      speak(word(k+1));
+      k++;
+      hintTimer = setTimeout(stepFn, 620);
+    };
+    stepFn();
+  } else if(L.rep === "line"){
+    speak("نبدأ من " + word(R.q.a) + " ونقفز " + word(R.q.b) + " فنصل إلى " + word(R.q.a + R.q.b));
+    $("feedback").className = "feedback";
+    $("feedback").textContent = "ابدأ من " + num(R.q.a) + " واقفز " + num(R.q.b) + " مرات";
+  } else {
+    speak(word(R.q.a) + " زائد " + word(R.q.b) + " يساوي " + word(R.q.a + R.q.b));
+    $("feedback").className = "feedback";
+    $("feedback").textContent = "انظر إلى طول القضيبين معًا";
+  }
+}
+
+/* ========== نهاية الجولة ========== */
+function finishRound(){
+  $("roundBar").style.inlineSize = "100%";
+  var score = R.firstTry;
+  var stars = score >= 9 ? 3 : (score >= 7 ? 2 : (score >= 5 ? 1 : 0));
+  if(stars > S.stars[R.level]) S.stars[R.level] = stars;
+  if(stars >= 2 && S.unlocked < R.level + 2 && R.level + 1 < LEVELS.length) S.unlocked = R.level + 2;
+  save();
+  winSound();
+  $("rewardTitle").textContent = stars >= 2 ? "أحسنت! أتممت المرحلة" : "جولة جيدة، لنكرّرها";
+  $("rewardStars").innerHTML = starStr(stars);
+  $("rewardText").textContent = "إجابات صحيحة من أول محاولة: " + num(score) + " من " + num(ROUND_LEN) +
+    (stars >= 2 && R.level + 1 < LEVELS.length ? " · فُتحت المرحلة التالية" : "");
+  $("btnNext").hidden = !(R.level + 1 < LEVELS.length && S.unlocked > R.level + 1);
+  speak(stars >= 2 ? "أحسنت! أتممت المرحلة" : "جولة جيدة، لنكرّرها");
+  show("Reward");
+}
+
+/* ========== لوحة الأهل ========== */
+function renderParents(){
+  var totalRight = S.right.reduce(function(a,b){ return a+b; }, 0);
+  var totalWrong = S.wrong.reduce(function(a,b){ return a+b; }, 0);
+  var total = totalRight + totalWrong;
+  var acc = total ? Math.round(totalRight/total*100) : 0;
+  var avg = S.totalAnswers ? (S.totalMs/S.totalAnswers/1000) : 0;
+  var starsAll = S.stars.reduce(function(a,b){ return a+b; }, 0);
+  $("statsBox").innerHTML =
+    '<div class="stat"><b>'+num(total)+'</b><span class="small muted">سؤال أُجيب عنه</span></div>'+
+    '<div class="stat"><b>'+num(acc)+'٪</b><span class="small muted">نسبة الصواب</span></div>'+
+    '<div class="stat"><b>'+num(avg.toFixed(1))+' ث</b><span class="small muted">متوسط زمن الإجابة</span></div>'+
+    '<div class="stat"><b>'+num(starsAll)+' / '+num(LEVELS.length*3)+'</b><span class="small muted">النجوم</span></div>'+
+    '<div class="stat"><b>'+num(S.rounds)+'</b><span class="small muted">عدد الجولات</span></div>'+
+    '<div class="stat"><b>'+num(S.unlocked)+'</b><span class="small muted">مراحل مفتوحة</span></div>';
+
+  var rows = '<tr><th>المرحلة</th><th>أسئلة</th><th>صواب</th><th>خطأ</th><th>النجوم</th><th>الحالة</th></tr>';
+  LEVELS.forEach(function(L, i){
+    var t = S.right[i] + S.wrong[i];
+    var a = t ? Math.round(S.right[i]/t*100) : 0;
+    var state = (i >= S.unlocked) ? '<span class="pill n">مغلقة</span>'
+      : (S.stars[i] >= 2 ? '<span class="pill g">متقَنة</span>' : '<span class="pill w">قيد التدريب</span>');
+    rows += '<tr><td>'+num(i+1)+' · '+L.name+'</td><td>'+num(t)+'</td><td>'+num(S.right[i])+' ('+num(a)+'٪)</td><td>'+num(S.wrong[i])+'</td><td style="color:var(--star)">'+starStr(S.stars[i])+'</td><td>'+state+'</td></tr>';
+  });
+  $("levelTable").innerHTML = rows;
+
+  var g = $("factGrid"); g.innerHTML = "";
+  for(var r=0;r<=10;r++){
+    for(var c=0;c<=10;c++){
+      var cell = document.createElement("div");
+      if(r === 0 || c === 0){
+        cell.style.background = "transparent";
+        cell.style.fontWeight = "700";
+        cell.textContent = (r === 0 && c === 0) ? "+" : num(r === 0 ? c : r);
+      } else {
+        var lo = Math.min(r,c), hi = Math.max(r,c);
+        var f = S.facts[lo+"+"+hi];
+        if(f){
+          var ratio = f.r / (f.r + f.w);
+          cell.className = (f.r >= 2 && ratio >= 0.8) ? "k" : (ratio >= 0.5 ? "s" : "b");
+          cell.title = lo+" + "+hi+" — صواب "+f.r+" / خطأ "+f.w;
+        }
+      }
+      g.appendChild(cell);
+    }
+  }
+}
+
+/* ========== الأزرار ========== */
+$("btnPlay").addEventListener("click", function(){ startRound(Math.max(0, S.unlocked-1)); });
+$("btnMode").addEventListener("click", function(){
+  S.input = (S.input === "choice") ? "pad" : "choice"; save(); renderLevels();
+});
+$("btnSound").addEventListener("click", function(){
+  S.sound = !S.sound; save();
+  this.setAttribute("aria-pressed", String(S.sound));
+  this.textContent = S.sound ? "🔊" : "🔇";
+  if(!S.sound) stopSpeak(); else popSound();
+});
+$("btnNum").addEventListener("click", function(){
+  S.numerals = (S.numerals === "ar") ? "en" : "ar"; save();
+  this.textContent = S.numerals === "ar" ? "١٢" : "12";
+  renderLevels();
+  if(!$("screenGame").hidden && R.q){ renderViz(R.q, false); renderEquation(R.q, null); renderAnswers(R.q); }
+  if(!$("screenParents").hidden) renderParents();
+});
+$("btnParents").addEventListener("click", function(){ stopSpeak(); show("Parents"); });
+$("btnHome").addEventListener("click", function(){ stopSpeak(); clearTimeout(hintTimer); show("Home"); });
+$("btnHint").addEventListener("click", hint);
+$("btnRepeat").addEventListener("click", function(){ if(R.q) sayQuestion(); });
+$("btnAgain").addEventListener("click", function(){ startRound(R.level); });
+$("btnNext").addEventListener("click", function(){ startRound(Math.min(LEVELS.length-1, R.level+1)); });
+$("btnBackHome").addEventListener("click", function(){ show("Home"); });
+$("btnReset").addEventListener("click", function(){
+  var b = this;
+  if(b.dataset.armed !== "1"){ b.dataset.armed = "1"; b.textContent = "اضغط مرة أخرى للتأكيد"; setTimeout(function(){ b.dataset.armed=""; b.textContent="محو كل البيانات"; }, 4000); return; }
+  try{ localStorage.removeItem(STORE_KEY); }catch(e){}
+  S.unlocked=1; S.stars=[0,0,0,0,0,0,0]; S.done=[0,0,0,0,0,0,0]; S.right=[0,0,0,0,0,0,0]; S.wrong=[0,0,0,0,0,0,0];
+  S.facts={}; S.rounds=0; S.totalMs=0; S.totalAnswers=0; save();
+  b.dataset.armed=""; b.textContent="محو كل البيانات";
+  renderParents(); renderLevels();
+});
+
+/* لوحة المفاتيح: ١ ٢ ٣ لاختيار الإجابة */
+document.addEventListener("keydown", function(e){
+  if($("screenGame").hidden || S.input !== "choice") return;
+  var k = e.key;
+  if(k >= "1" && k <= "3"){
+    var bs = $("answers").querySelectorAll("button");
+    var b = bs[parseInt(k,10)-1];
+    if(b && !b.disabled) b.click();
+  } else if(k === "h" || k === "H"){ hint(); }
+});
+
+/* ========== الإقلاع ========== */
+function boot(){
+  load();
+  $("btnSound").textContent = S.sound ? "🔊" : "🔇";
+  $("btnSound").setAttribute("aria-pressed", String(S.sound));
+  $("btnNum").textContent = S.numerals === "ar" ? "١٢" : "12";
+  show("Home");
+}
+try{
+  if(window.claude && window.claude.hot && window.claude.hot.ready){ window.claude.hot.ready(boot); }
+  else { boot(); }
+  if(window.claude && window.claude.hot && window.claude.hot.snapshot){ window.claude.hot.snapshot(function(){ return {}; }); }
+}catch(e){ boot(); }
+})();
+</script>
+</body>
+</html>
